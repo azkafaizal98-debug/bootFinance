@@ -64,7 +64,7 @@ cd NAMA-REPO
 ---
 
 2️⃣ Install Dependencies
-,,,
+```
 Pastikan Node.js sudah terinstall.
 
 Cek versi:
@@ -75,44 +75,43 @@ npm -v
 Install semua module:
 
 npm install
-,,,
-
+```
 ---
 
 3️⃣ Install MongoDB (Local Database)
-,,,
+```
 Download MongoDB Community Server:
 
 🔗 https://www.mongodb.com/try/download/community
-,,,
-,,,
+```
+```
 Setelah install, jalankan MongoDB service:
-,,,
-,,,
+```
+```
 Windows:
 
 net start MongoDB
-,,,
-,,,
+```
+```
 Mac/Linux:
 
 mongod
-,,,
-,,,
+```
+```
 Pastikan MongoDB berjalan di:
 
 mongodb://127.0.0.1:27017
-,,,
+```
 
 ---
 
 4️⃣ Setup Environment Variables
 
 Buat file .env di root project:
-
+```
 BOT_TOKEN=ISI_TOKEN_BOT_KAMU
 MONGO_URI=mongodb://127.0.0.1:27017/financebot
-
+```
 Untuk mendapatkan BOT_TOKEN:
 
 1. Buka Telegram
@@ -132,14 +131,14 @@ Untuk mendapatkan BOT_TOKEN:
 ---
 
 5️⃣ Run Bot
-
+```
 npm start
-
+```
 Jika berhasil, console akan menampilkan:
-
+```
 Bot is running...
 Database connected...
-
+```
 Bot siap digunakan di Telegram.
 
 
@@ -147,16 +146,21 @@ Bot siap digunakan di Telegram.
 
 📖 Example Commands
 
-/add 12000 makan
-/add 50000 gaji
-/list
-/total
+Perintah : Contoh 
+Makan 12.000
+
+dengan perintah itu akan langsung terkirim ke database 
+
+Command apa aja yang ada? baru ada 2 
+
+/laporan 
+/findAll
 
 
 ---
 
 📂 Project Structure
-
+```
 ├── config/
 │   └── db.js
 ├── models/
@@ -166,7 +170,7 @@ Bot siap digunakan di Telegram.
 ├── .env
 ├── package.json
 └── README.md
-
+```
 
 ---
 
@@ -197,22 +201,21 @@ Bot siap digunakan di Telegram.
 🧪 Development Mode (Optional)
 
 Gunakan nodemon agar auto-restart saat ada perubahan:
-
+```
 npm install -g nodemon
 nodemon bot.js
-
+```
 
 ---
 
 📌 Requirements
-
+```
 Node.js v16+
 
 MongoDB Local
 
 Telegram Account
-
-
+```
 
 ---
 
@@ -226,10 +229,10 @@ Jangan upload file .env ke GitHub
 
 
 Tambahkan ke .gitignore:
-
+```
 .env
 node_modules
-
+```
 
 ---
 
@@ -249,8 +252,7 @@ Deploy ke VPS / Railway / Render
 
 🧑‍💻 Author
 
-Faizal GM
-
+Azka Faizal Dwi Ramadhan
 
 ---
 
