@@ -58,7 +58,7 @@ bot.command('laporan', async (ctx) => {
     }
 })
 
-bot.command('findAll', async (ctx) => {
+bot.command('list', async (ctx) => {
     try {
         const findAll = await axios.get(`${API_URL}/transactions/${ctx.from.id}`)
         const data = findAll.data
