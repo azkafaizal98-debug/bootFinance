@@ -57,11 +57,10 @@ Ikuti langkah berikut agar bot bisa dijalankan di komputer kamu.
 ---
 
 1️⃣ Clone Repository
-,,,
+```
 git clone https://github.com/USERNAME/NAMA-REPO.git
 cd NAMA-REPO
-
-,,,
+```
 ---
 
 2️⃣ Install Dependencies
