@@ -48,27 +48,24 @@ Telegraf.js
 
 dotenv
 
-
-
 ---
 
 📦 Installation Guide
 
 Ikuti langkah berikut agar bot bisa dijalankan di komputer kamu.
 
-
 ---
 
 1️⃣ Clone Repository
-
+,,,
 git clone https://github.com/USERNAME/NAMA-REPO.git
 cd NAMA-REPO
 
-
+,,,
 ---
 
 2️⃣ Install Dependencies
-
+,,,
 Pastikan Node.js sudah terinstall.
 
 Cek versi:
@@ -79,30 +76,34 @@ npm -v
 Install semua module:
 
 npm install
-
+,,,
 
 ---
 
 3️⃣ Install MongoDB (Local Database)
-
+,,,
 Download MongoDB Community Server:
 
 🔗 https://www.mongodb.com/try/download/community
-
+,,,
+,,,
 Setelah install, jalankan MongoDB service:
-
+,,,
+,,,
 Windows:
 
 net start MongoDB
-
+,,,
+,,,
 Mac/Linux:
 
 mongod
-
+,,,
+,,,
 Pastikan MongoDB berjalan di:
 
 mongodb://127.0.0.1:27017
-
+,,,
 
 ---
 
