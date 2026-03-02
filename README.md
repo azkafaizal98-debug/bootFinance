@@ -18,8 +18,6 @@ Bot ini memungkinkan user menyimpan transaksi keuangan dan menampilkan riwayat s
 
 ✅ Tambah pemasukan
 
-✅ Tambah pengeluaran
-
 ✅ Format angka otomatis (contoh: 12.000)
 
 ✅ Lihat semua transaksi
@@ -188,7 +186,7 @@ Command apa aja yang ada? baru ada 2
 4. Disimpan ke MongoDB
 
 
-5. Saat /list, data diambil dari database
+5. Saat /findAll, data diambil dari database
 
 
 6. Format angka ditampilkan dengan pemisah ribuan
@@ -255,20 +253,3 @@ Deploy ke VPS / Railway / Render
 Azka Faizal Dwi Ramadhan
 
 ---
-
-Kalau kamu mau, saya bisa tambahkan:
-
-Versi MongoDB Atlas (cloud)
-
-Cara deploy ke VPS
-
-Cara deploy ke Railway
-
-Tambahkan badge GitHub (license, version, dll)
-
-Tambahkan screenshot preview
-
-Tambahkan diagram arsitektur sistem
-
-
-Sekarang README kamu sudah cukup jelas untuk developer lain. Tinggal kamu konsisten kodingnya aja. Jangan README rapi tapi logic berantakan. Itu dosa kecil developer pemula.
