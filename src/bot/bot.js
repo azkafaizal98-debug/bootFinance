@@ -21,7 +21,7 @@ bot.help(async (ctx) => {
     Perintah :
     makan 15000
     -/laporan
-    -/findAll
+    -/list
     `)
 })
 
