@@ -98,7 +98,7 @@ mongod
 ```
 Pastikan MongoDB berjalan di:
 
-mongodb://127.0.0.1:27017
+mongodb://KODE_URI_KAMU/DIRECTORY_MONGODB
 ```
 
 ---
@@ -108,7 +108,7 @@ mongodb://127.0.0.1:27017
 Buat file .env di root project:
 ```
 BOT_TOKEN=ISI_TOKEN_BOT_KAMU
-MONGO_URI=mongodb://127.0.0.1:27017/financebot
+MONGO_URI=mongodb//KODE_URI_KAMU/DIRECTORY_MONGODB
 ```
 Untuk mendapatkan BOT_TOKEN:
 
