@@ -5,12 +5,13 @@ const transaction = require('../models/models')
 
 router.post('/transactions', async (req, res) => {
     try {
-        const { userId, description, total } = req.body
+        const { userId, description, total, createdAt } = req.body
 
         const newTransaction = await transaction.create({
             userId,
             description,
-            total
+            total,
+            createdAt
         })
 
         console.log(newTransaction)
@@ -25,15 +26,37 @@ router.post('/transactions', async (req, res) => {
 
 router.get('/summary/:userId', async (req, res) => {
     try {
-        const { userId } = req.params
+        const { userId} = req.params
+
+        const now = new Date()
+        const {month, year} = req.query
+
+
+
+        const monthNum =  
+            month !== undefined && month !== ""
+            ?Number(month) - 1
+            : now.getMonth()
+        const yearNum = 
+            year !== undefined && year !== ""
+            ?Number(year)
+            : now.getFullYear()
+            
+        const startDate = new Date(yearNum,monthNum, 1)
+        const endDate = new Date(yearNum,monthNum + 1, 1)
 
         const total = await transaction.aggregate([
-            { $match: { userId: userId } },
+            { $match: { userId: userId,
+                createdAt: {
+                    $gte: startDate,
+                    $lt: endDate
+                }
+            } },
             { $group: { _id: null, total: { $sum: "$total" } } }
         ])
 
         res.json({
-            total: total[0]?.total || 0
+            total: total.length > 0 ? total[0].total : 0
         })
 
     } catch (err) {
@@ -41,11 +64,24 @@ router.get('/summary/:userId', async (req, res) => {
     }
 })
 
-router.get(`/transactions/:userId`, async (req, res) => {
+router.get(`/transactions/`, async (req, res) => {
     try {
-        const { userId } = req.params
+        const {userId ,month, year} = req.query
+        const filter = {userId}
 
-        const find = await transaction.find({ userId: userId }).select('description total -_id')
+        
+
+        if (month && year) {
+            const startDate = new Date(year,month - 1, 1)
+            const endDate = new Date(year, month, 1)
+
+            filter.createdAt = {
+                $gte: startDate,
+                $lt: endDate
+            }
+        }
+
+    const find = await transaction.find(filter).sort({createdAt: - 1 }).select('description total createdAt -_id')
         
         res.json(find)
 
