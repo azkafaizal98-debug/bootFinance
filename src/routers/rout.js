@@ -15,8 +15,6 @@ router.post('/transactions/', async (req, res) => {
             createdAt
         })
 
-        console.log(req.body)
-
         console.log(newTransaction)
 
         res.json(newTransaction)
@@ -69,7 +67,7 @@ router.get('/summary/:userId', async (req, res) => {
 
 router.get(`/transactions/`, async (req, res) => {
     try {
-        const {userId ,month, year} = req.query
+        const {userId ,month, year, category} = req.query
         const filter = {userId}
 
         
@@ -84,7 +82,9 @@ router.get(`/transactions/`, async (req, res) => {
             }
         }
 
-    const find = await transaction.find(filter).sort({createdAt: - 1 }).select('description total createdAt -_id')
+        if(category) filter.category = category
+
+    const find = await transaction.find(filter).sort({createdAt: - 1 }).select('description total category createdAt -_id')
         
         res.json(find)
         console.log(find)

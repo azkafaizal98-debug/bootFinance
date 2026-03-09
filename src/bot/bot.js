@@ -84,7 +84,7 @@ Menampilkan ringkasan laporan keuangan.
 
 🆘 */help*
 Menampilkan panduan ini.
-`)
+`, {parse_mode: "Markdown"})
 }
 
 bot.command('help', help)
@@ -149,30 +149,42 @@ const list = async (ctx) => {
 
         console.log(findAll)
 
-        const filters = data.map(item => {
+
+        for (const item of data) {
+
             const deskripsi = item.description
+            const category = item.category || "lainnya"
             const tanggal = new Date(item.createdAt)
-            const date = new Date()
 
-            const jam = date.getHours().toString().padStart(2, '0')
-            const menit = date.getMinutes().toString().padStart(2, '0')
-
-            console.log(item.createdAt)
+            const jam = tanggal.getHours().toString().padStart(2, '0')
+            const menit = tanggal.getMinutes().toString().padStart(2, '0')
 
             const formatingDate = tanggal.toLocaleDateString('id-ID', {
                 day: '2-digit',
                 month: 'long',
-                year: 'numeric',
+                year: 'numeric'
             })
 
-            const ttl = item.total
-            const formateTotal = ttl.toLocaleString('id-ID')
+            const total = Number(item.total || 0).toLocaleString('id-ID')
 
-            return `🧾 DETAIL TRANSAKSI\n────────────────────\n📆 Tanggal : ${formatingDate}\n\n🕛 Jam : ${jam} : ${menit} WIB\n\n📝 Deskripsi : ${deskripsi}\n\n💰 Nominal : ${formateTotal}\n────────────────────\n`
-        }).join('\n')
+            const nama = ctx.from.first_name
+            const pesan = `💳 *TRANSAKSI TERCATAT*
+━━━━━━━━━━━━━━━━━━
+👤 *User*    : ${nama}
+📅 *Tanggal* : ${formatingDate}  
+🕒 *Waktu*   : ${jam}:${menit} WIB  
 
-        ctx.reply(`📋 RIWAYAT TRANSAKSI SELAMA ${displayMonth} / ${year}\n━━━━━━━━━━━━━━━━━━━━\n\n${filters}`)
+🏷 *Kategori* : ${category}  
+📝 *Deskripsi*: ${deskripsi}  
 
+💰 *Nominal*  : Rp ${total}
+
+━━━━━━━━━━━━━━━━━━`
+
+            await ctx.reply(
+                pesan, {parse_mode: "Markdown"}
+            )
+        }
     } catch (err) {
         console.error(err.message)
         ctx.reply('gagal mengambil semua data')
@@ -227,19 +239,19 @@ bot.action(/cat_(.+)/, async (ctx) => {
     const { description, total } = data
 
 
-    try{
+    try {
 
-    await axios.post(`${API_URL}/transactions`, {
-        userId: ctx.from.id,
-        description,
-        total,
-        category
-    })
+        await axios.post(`${API_URL}/transactions`, {
+            userId: ctx.from.id,
+            description,
+            total,
+            category
+        })
 
-    console.log(description, total, category)
-    delete pendingInput[userId]
-    ctx.answerCbQuery()
-    ctx.reply('Berhasil di catat')
+        console.log(description, total, category)
+        delete pendingInput[userId]
+        ctx.answerCbQuery()
+        ctx.reply('Berhasil di catat')
     } catch (err) {
         console.error(err)
         console.log('eorro post')
