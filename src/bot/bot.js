@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { Telegraf } = require('telegraf')
+const { Telegraf, Markup } = require('telegraf')
 const axios = require('axios')
 const { text } = require('express')
 const { Mongoose } = require('mongoose')
@@ -40,18 +40,18 @@ Bot ini membantu kamu:
 ━━━━━━━━━━━━━━━
 
 💡 Tips: Catat transaksi setiap hari agar laporan lebih akurat.
-`,    {
-            parse_mode: "Markdown",
-            reply_markup: {
-                keyboard: [
-                    ["➕ Tambah Transaksi"],
-                    ["📋 List Transaksi", "📊 Laporan"],
-                    ["❓ Help"]
-                ],
-                resize_keyboard: true
-            }
-}
-)
+`, {
+        parse_mode: "Markdown",
+        reply_markup: {
+            keyboard: [
+                ["➕ Tambah Transaksi"],
+                ["📋 List Transaksi", "📊 Laporan"],
+                ["❓ Help"]
+            ],
+            resize_keyboard: true
+        }
+    }
+    )
 }
 )
 // Bot Help
@@ -135,9 +135,9 @@ const list = async (ctx) => {
         const text = ctx.message.text.split(' ')
         const month = text[1] ? Number(text[1]) : now.getMonth() + 1
         const displayMonth = monthName[month - 1]
-        const year = text[2] ? Number(text[1]) : now.getFullYear()
+        const year = text[2] ? Number(text[2]) : now.getFullYear()
 
-        const findAll = await axios.get(`${API_URL}/transactions/ `, {
+        const findAll = await axios.get(`${API_URL}/transactions/`, {
             params: {
                 userId: ctx.from.id,
                 month,
@@ -147,7 +147,7 @@ const list = async (ctx) => {
 
         const data = findAll.data
 
-        console.log(data)
+        console.log(findAll)
 
         const filters = data.map(item => {
             const deskripsi = item.description
@@ -183,21 +183,29 @@ bot.command('list', list)
 bot.command('ls', list)
 
 //Bot Add
+const pendingInput = {}
 const add = async (ctx) => {
     try {
+
+
         const match = ctx.match
         console.log(match)
         const description = match[1]
         const rawTotal = match[2]
-        const cleanTotal = rawTotal.replace(/[.,]/g, "")
-        const total = Number(cleanTotal)
+        const total = Number(rawTotal.replace(/[.,]/g, ""))
 
-        await axios.post(`${API_URL}/transactions/`, {
-            userId: ctx.from.id,
+        pendingInput[ctx.from.id] = {
             description,
             total
-        })
-        ctx.reply('transaksi berhasil di catat')
+        }
+
+        ctx.reply(`Pilih kategori`,
+            Markup.inlineKeyboard([
+                Markup.button.callback('Makan', 'cat_makanan'),
+                Markup.button.callback('Transport', 'cat_transport'),
+                Markup.button.callback('Belanja', 'cat_belanja')
+            ])
+        )
     } catch (err) {
         console.error(err)
         ctx.reply('terjadi kesalahan')
@@ -205,6 +213,39 @@ const add = async (ctx) => {
 }
 
 bot.hears(/^(.+)\s([\d.,]+)$/, add)
+
+
+bot.action(/cat_(.+)/, async (ctx) => {
+
+    const userId = ctx.from.id
+    const category = ctx.match[1]
+
+    const data = pendingInput[userId]
+
+    if (!data) return
+
+    const { description, total } = data
+
+
+    try{
+
+    await axios.post(`${API_URL}/transactions`, {
+        userId: ctx.from.id,
+        description,
+        total,
+        category
+    })
+
+    console.log(description, total, category)
+    delete pendingInput[userId]
+    ctx.answerCbQuery()
+    ctx.reply('Berhasil di catat')
+    } catch (err) {
+        console.error(err)
+        console.log('eorro post')
+    }
+})
+
 
 //all Button bto hears
 

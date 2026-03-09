@@ -4,7 +4,7 @@ const transactionScema = new mongoose.Schema({
     userId : String,
     total : Number,
     description : String,
-    category : String,
+    category: String,
     createdAt : {
         type : Date,
         default : Date.now

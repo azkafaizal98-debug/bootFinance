@@ -3,16 +3,19 @@ const { message } = require('telegraf/filters')
 const router = express.Router()
 const transaction = require('../models/models')
 
-router.post('/transactions', async (req, res) => {
+router.post('/transactions/', async (req, res) => {
     try {
-        const { userId, description, total, createdAt } = req.body
+        const { userId, description, total, category ,createdAt } = req.body
 
         const newTransaction = await transaction.create({
             userId,
             description,
             total,
+            category,
             createdAt
         })
+
+        console.log(req.body)
 
         console.log(newTransaction)
 
@@ -84,7 +87,7 @@ router.get(`/transactions/`, async (req, res) => {
     const find = await transaction.find(filter).sort({createdAt: - 1 }).select('description total createdAt -_id')
         
         res.json(find)
-
+        console.log(find)
     } catch (err) {
         res.status(500).json({ message: 'gagal data tidak di temukan' })
     }
