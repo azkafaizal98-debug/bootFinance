@@ -4,6 +4,8 @@ const axios = require('axios')
 const { text } = require('express')
 const { Mongoose } = require('mongoose')
 const { keyboard } = require('telegraf/markup')
+const runOCR = require('./services/OCR')
+const parse = require('./parce/parsers')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -84,7 +86,7 @@ Menampilkan ringkasan laporan keuangan.
 
 🆘 */help*
 Menampilkan panduan ini.
-`, {parse_mode: "Markdown"})
+`, { parse_mode: "Markdown" })
 }
 
 bot.command('help', help)
@@ -182,7 +184,7 @@ const list = async (ctx) => {
 ━━━━━━━━━━━━━━━━━━`
 
             await ctx.reply(
-                pesan, {parse_mode: "Markdown"}
+                pesan, { parse_mode: "Markdown" }
             )
         }
     } catch (err) {
@@ -278,6 +280,50 @@ bot.hears("📊 Laporan", async (ctx) => {
 bot.hears("❓ Help", async (ctx) => {
     await ctx.reply("Panduan penggunaan bot...")
     await ctx.reply("/h")
+})
+
+// boot foto
+const pendingReceipt = {}
+bot.on('photo', async (ctx) => {
+    try {
+        const photo = ctx.message.photo
+        const fileId = photo[photo.length - 1].file_id
+
+        const file = await ctx.telegram.getFile(fileId)
+        const imgUrl = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${file.file_path}`
+
+        const text = await runOCR(imgUrl)
+
+        const items = parse(text)
+
+        console.log(items)
+        pendingReceipt[ctx.from.id] = items
+
+        let message = "Hasil Pembacaan Struk"
+
+        items.forEach((item, i) => {
+            message += `
+${i + 1}.Name:  ${item.name}\n`
+            message += `Qty:  ${item.qty}\n`
+            message += `Harga:  Rp.${item.harga.toLocaleString()}\n`
+            message += `Total:  RP.${item.total.toLocaleString()}\n`
+        })
+
+        const grandTotal = items.reduce((a, b) => a + b.total, 0)
+        message += `Total Semua : Rp.${grandTotal.toLocaleString()}`
+
+        ctx.reply(message, {
+            parse_mode: "Markdown",
+            ...Markup.inlineKeyboard([
+                [Markup.button.callback('Simpan', 'ocr_save')],
+                [Markup.button.callback('Edit', 'ocr_edit')],
+                [Markup.button.callback('Batal', 'ocr_cancel')]
+            ])
+        })
+
+    } catch (err) {
+        console.error(err)
+    }
 })
 
 bot.launch()

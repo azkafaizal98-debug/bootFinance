@@ -19,7 +19,8 @@
     "google-auth-library": "^10.6.1",
     "google-spreadsheet": "^5.2.0",
     "mongoose": "^9.2.3",
-    "telegraf": "^4.16.3"
+    "telegraf": "^4.16.3",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
