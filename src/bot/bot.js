@@ -287,6 +287,8 @@ const pendingReceipt = {}
 bot.on('photo', async (ctx) => {
     try {
         const photo = ctx.message.photo
+
+        ctx.reply("Tunguu sebentar struk anda sedang di proses....")
         const fileId = photo[photo.length - 1].file_id
 
         const file = await ctx.telegram.getFile(fileId)
@@ -316,14 +318,40 @@ ${i + 1}.Name:  ${item.name}\n`
             parse_mode: "Markdown",
             ...Markup.inlineKeyboard([
                 [Markup.button.callback('Simpan', 'ocr_save')],
-                [Markup.button.callback('Edit', 'ocr_edit')],
-                [Markup.button.callback('Batal', 'ocr_cancel')]
-            ])
+                [
+                Markup.button.callback('Edit', 'ocr_edit'),
+                Markup.button.callback('Batal', 'ocr_cancel')
+            ]])
         })
 
     } catch (err) {
         console.error(err)
     }
+})
+
+bot.action('ocr_save', async (ctx)=> {
+    const data = pendingReceipt[ctx.from.id]
+
+    if(!data) return ctx.reply("data tidak di temukan")
+
+    for(const item of data) {
+        await axios.post(`${API_URL}/transactions`, {
+            userId: ctx.from.id,
+            description: item.name,
+            total: item.total,
+            category:"belanja"
+        })
+    }
+
+    delete pendingReceipt[ctx.from.id]
+
+    ctx.reply("✅ transaksi berhasil disimpan")
+})
+
+bot.action('ocr_cancel', async (ctx) =>{
+    delete pendingReceipt[ctx.from.id]
+
+    ctx.reply('❌ transaksi dibatalkan')
 })
 
 bot.launch()
