@@ -11,26 +11,53 @@ const parse = (txt) => {
         'DISKON'
     ]
 
-    const items = []
+    let items = []
+    let lastItmes = null
+    try {
 
-    for (const line of lines) {
-        const upper = line.toUpperCase()
+        for (const line of lines) {
 
-        if (ignore.some(word => upper.includes(word))) continue
+            const upper = line.toUpperCase()
+            const voucherMatch = line.match(/VOUCHER\s*:\s*\(([\d.,]+)\)/)
 
-        const match = line.match(/(.+?)\s+(\d+)\s+(\d+)\s+([\d.,]+)$/)
+            if (voucherMatch && lastItmes) {
+                const voucher = Number(voucherMatch[1].replace(/[.,]/g, ""))
 
-        if (match) {
-            items.push({
-                name: match[1].trim(),
-                qty:Number(match[2]),
-                harga:Number(match[3]),
-                total: Number(match[4].replace(/[.,]/g, ""))
-            })
+                lastItmes.voucher = voucher
+                lastItmes.total = lastItmes.total - voucher
+            }
+
+            const diskonMatch = line.match(/DISKON\s*:\s*\(([\d.,]+)\)/)
+
+            if(diskonMatch && lastItmes) {
+                const diskon = Number(diskonMatch[1].replace(/[.,]/g, ""))
+
+                lastItmes.diskon = diskon
+                lastItmes.total = lastItmes.total - diskon
+            }
+
+            if (ignore.some(word => upper.includes(word))) continue
+
+            const itemMatch = line.match(/(.+?)\s+(\d+)\s+(\d+)\s+([\d.,]+)$/)
+
+            if (itemMatch) {
+                const item = {
+                    name: itemMatch[1].trim(),
+                    qty: Number(itemMatch[2]),
+                    harga: Number(itemMatch[3]),
+                    total: Number(itemMatch[4].replace(/[.,]/g, "")),
+                    voucher: 0,
+                    diskon: 0
+                }
+                items.push(item)
+                lastItmes = item
+            }
         }
-    }
 
-    return items
+        return items
+    } catch (err) {
+        console.error('tidak dapat di jalankan', err)
+    }
 }
 
 module.exports = parse

@@ -310,6 +310,13 @@ bot.on('photo', async (ctx) => {
             message += `    *Qty*:  ${item.qty}\n`
             message += `    *Harga*:  Rp.${item.harga.toLocaleString()}\n\n`
             message += '━━━━━━━━━━━━━━━\n'
+            if (item.voucher || item.diskon > 0) {
+                message += `    *Voucher*:  Rp.${item.voucher.toLocaleString()}\n`
+                message += `    *Diskon*:  Rp.${item.diskon.toLocaleString()}\n`
+            } else {
+                message += `Tidak ada *Diskon* atau *Voucher*\n`
+            }
+            message += '━━━━━━━━━━━━━━━\n'
             message += `🛒 *Total Item*: ${item.qty}\n`
             message += `💰 *Total Belanja*:  RP.${item.total.toLocaleString()}\n\n`
         })
