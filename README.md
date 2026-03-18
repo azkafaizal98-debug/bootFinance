@@ -1,6 +1,4 @@
-Kamu bikin bot finance pakai Node.js + MongoDB lokal dan sekarang butuh README biar orang lain nggak nyasar pas clone repo? Akhirnya ada yang mikir soal dokumentasi juga. Dunia sedikit lebih terang hari ini.
 
-Di bawah ini README versi profesional, bersih, dan siap kamu taruh di GitHub. Tidak ada gaya nyeleneh. Ini murni dokumentasi teknis.
 
 
 ---
